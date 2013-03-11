@@ -44,6 +44,11 @@
   [obj]
   (:api-meta (meta obj)))
 
+(defn meta?
+  "True if metadata can be added to the object"
+  [x]
+  (instance? clojure.lang.IObj x))
+
 (defn safe-parse
   "Takes a response and checks for certain status codes. If 204, return nil.
    If 400, 401, 204, 422, 403, 404 or 500, return the original response with the body parsed
@@ -61,10 +66,9 @@
                metadata (extract-useful-meta headers)]
            (if-not (.contains content-type "raw")
              (let [parsed (parse-json body)]
-               (if (map? parsed)
+               (if (meta? parsed)
                  (with-meta parsed {:links links :api-meta metadata})
-                 (with-meta (map #(with-meta % metadata) parsed)
-                   {:links links :api-meta metadata})))
+                 parsed))
              body))))
 
 (defn update-req
