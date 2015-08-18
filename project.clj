@@ -1,4 +1,4 @@
-(defproject tentacles "0.4.1"
+(defproject tentacles "0.4.2-SNAPSHOT"
   :description "A library for working with the Github API."
   :url "https://github.com/Raynes/tentacles"
   :license {:name "Eclipse Public License"
