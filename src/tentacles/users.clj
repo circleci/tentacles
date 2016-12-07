@@ -1,7 +1,7 @@
 (ns tentacles.users
   "Implement the Github Users API: http://developer.github.com/v3/users/"
   (:refer-clojure :exclude [keys])
-  (:use [tentacles.core :only [api-call no-content?]]))
+  (:use [tentacles.core :only [api-call education-url no-content? with-url]]))
 
 (defn users
   "Get info about all users."
@@ -116,3 +116,8 @@
   "All repositories for a user."
   [user & [options]]
   (api-call :get "users/%s/repos" [user] options))
+
+(defn student
+  "Get student info about the currently authenticated user."
+  [& [options]]
+  (with-url education-url (api-call :get "user" nil options)))

@@ -5,6 +5,7 @@
             [cemerick.url :as url]))
 
 (def ^:dynamic url "https://api.github.com/")
+(def education-url "https://education.github.com/api/")
 (def ^:dynamic defaults {})
 
 (defn query-map
