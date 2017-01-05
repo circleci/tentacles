@@ -1,3 +1,5 @@
+[![Dependencies Status](https://jarkeeper.com/Raynes/tentacles/status.svg)](https://jarkeeper.com/Raynes/tentacles)
+
 # An octocat is nothing without her tentacles
 
 Tentacles is a Clojure library for working with the Github v3 API. It supports the entire Github API.
@@ -6,7 +8,7 @@ This library is the successor to my old [clj-github](https://github.com/Raynes/c
 
 ## Usage
 
-This is on clojars, of course. Just add `[tentacles "0.3.0"]` to your `:dependencies` in your project.clj file.
+This is on clojars, of course. Just add `[tentacles "0.5.1"]` to your `:dependencies` in your project.clj file.
 
 ### CODE!
 

@@ -74,7 +74,7 @@
                      the name of the file. If one of the file keys in
                      the map is associated with 'nil', it'll be deleted."
   [id & [options]]
-  (api-call :post "gists/%s" [id] options))
+  (api-call :patch "gists/%s" [id] options))
 
 (defn star-gist
   "Star a gist."
@@ -96,7 +96,7 @@
 (defn fork-gist
   "Fork a gist."
   [id & [options]]
-  (api-call :post "gists/%s/fork" [id] options))
+  (api-call :post "gists/%s/forks" [id] options))
 
 (defn delete-gist
   "Delete a gist."
@@ -123,7 +123,7 @@
 (defn edit-comment
   "Edit a comment."
   [comment-id body options]
-  (api-call :post "gists/comments/%s" [comment-id] (assoc options :body body)))
+  (api-call :patch "gists/comments/%s" [comment-id] (assoc options :body body)))
 
 (defn delete-comment
   "Delete a comment."

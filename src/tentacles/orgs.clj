@@ -34,7 +34,7 @@
       location      -- Organization location.
       name          -- Name of the organization."
   [org options]
-  (api-call :post "orgs/%s" [org] options))
+  (api-call :patch "orgs/%s" [org] options))
 
 ;; ## Org Members API
 
@@ -110,7 +110,7 @@
                      push: team can push and pull but not admin.
                      admin: team can push, pull, and admin."
   [id options]
-  (api-call :post "teams/%s" [id] options))
+  (api-call :patch "teams/%s" [id] options))
 
 (defn delete-team
   "Delete a team."
@@ -156,3 +156,47 @@
   "Remove a repo from a team."
   [id user repo options]
   (no-content? (api-call :delete "teams/%s/repos/%s/%s" [id user repo] options)))
+
+;; ## Org Hooks API
+
+(defn hooks
+  "List the hooks on an organization."
+  [org options]
+  (api-call :get "orgs/%s/hooks" [org] options))
+
+(defn specific-hook
+  "Get a specific hook."
+  [org id options]
+  (api-call :get "orgs/%s/hooks/%s" [org id] options))
+
+(defn create-hook
+  "Create a hook.
+   Options are:
+      events -- A sequence of event strings. Only 'push' by default.
+      active -- true or false; determines if the hook is actually triggered
+                on pushes."
+  [org config options]
+  (api-call :post "orgs/%s/hooks" [org]
+            (assoc options
+                   :name "web"
+                   :config config)))
+
+(defn edit-hook
+  "Edit an existing hook.
+   Options are:
+      config        -- Modified config.
+      events        -- A sequence of event strings. Replaces the events.
+      active        -- true or false; determines if the hook is actually
+                       triggered on pushes."
+  [org id config options]
+  (api-call :patch "orgs/%s/hooks/%s" [org id] (assoc options :config config)))
+
+(defn ping-hook
+  "Ping a hook."
+  [org id options]
+  (no-content? (api-call :post "orgs/%s/hooks/%s/pings" [org id] options)))
+
+(defn delete-hook
+  "Delete a hook."
+  [org id options]
+  (no-content? (api-call :delete "orgs/%s/hooks/%s" [org id] options)))

@@ -28,7 +28,7 @@
       hireable -- Looking for a job?
       bio      -- User's biography."
   [options]
-  (api-call :post "user" nil options))
+  (api-call :patch "user" nil options))
 
 (defn emails
   "List the authenticated user's emails."
@@ -102,14 +102,6 @@
   [title key options]
   (api-call :post "user/keys" nil (assoc options :title title :key key)))
 
-(defn edit-key
-  "Edit an existing public key.
-   Options are:
-      title -- New title.
-      key   -- New key."
-  [id options]
-  (api-call :post "user/keys/%s" [id] options))
-
 (defn delete-key
   "Delete a public key."
   [id options]
@@ -119,3 +111,8 @@
   "List the currently authenticated user's teams across all organizations"
   [& [options]]
   (api-call :get "user/teams" nil options))
+
+(defn repos
+  "All repositories for a user."
+  [user & [options]]
+  (api-call :get "users/%s/repos" [user] options))

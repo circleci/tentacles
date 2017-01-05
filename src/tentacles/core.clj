@@ -8,10 +8,10 @@
 (def ^:dynamic defaults {})
 
 (defn query-map
-  "Merge defaults, turn keywords into strings, and replace hyphens with underscores."
+  "Turn keywords into strings, and replace hyphens with underscores."
   [entries]
   (into {}
-        (for [[k v] (concat defaults entries)]
+        (for [[k v] entries]
           [(.replace (name k) "-" "_") v])))
 
 (defn parse-json
@@ -83,13 +83,13 @@
   [end-point positional]
   (str url (apply format end-point (map url/url-encode positional))))
 
-(defn make-request [method end-point positional
-                    {:keys [auth throw-exceptions follow-redirects accept
-                            oauth-token etag if-modified-since user-agent
-                            otp]
-                     :or {follow-redirects true throw-exceptions false}
-                     :as query}]
-  (let [req (merge-with merge
+(defn make-request [method end-point positional query]
+  (let [{:keys [auth throw-exceptions follow-redirects accept
+                oauth-token etag if-modified-since user-agent
+                otp]
+         :or {follow-redirects true throw-exceptions false}
+         :as query} (merge defaults query)
+        req (merge-with merge
                         {:url (format-url end-point positional)
                          :basic-auth auth
                          :throw-exceptions throw-exceptions
@@ -109,7 +109,7 @@
                           {:headers {"if-Modified-Since" if-modified-since}}))
         raw-query (:raw query)
         proper-query (query-map (dissoc query :auth :oauth-token :all-pages :accept :user-agent :otp))
-        req (if (#{:post :put :delete} method)
+        req (if (#{:post :put :delete :patch} method)
               (assoc req :body (json/generate-string (or raw-query proper-query)))
               (assoc req :query-params proper-query))]
     req))

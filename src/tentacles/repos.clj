@@ -79,7 +79,7 @@
       has-wiki      -- true, false.
       has-downloads -- true, false."
   [user repo options]
-  (api-call :post "repos/%s/%s"
+  (api-call :patch "repos/%s/%s"
             [user repo]
             (if (:name options)
               options
@@ -279,14 +279,6 @@
   (api-call :post "repos/%s/%s/keys" [user repo]
             (assoc options :title title :key key)))
 
-(defn edit-key
-  "Edit a deploy key.
-   Options are:
-      title -- New title.
-      key   -- New key."
-  [user repo id options]
-  (api-call :post "repos/%s/%s/keys/%s" [user repo id] options))
-
 (defn delete-key
   "Delete a deploy key."
   [user repo id options]
@@ -380,7 +372,7 @@
       active        -- true or false; determines if the hook is actually
                        triggered on pushes."
   [user repo id options]
-  (api-call :post "repos/%s/%s/hooks/%s" [user repo id] options))
+  (api-call :patch "repos/%s/%s/hooks/%s" [user repo id] options))
 
 (defn test-hook
   "Test a hook."
@@ -464,15 +456,30 @@
    content -- The updated file content, Base64 encoded.
    sha -- The blob SHA of the file being replaced.
    Options are:
-      branch -- The branch name. Default: the repository’s default branch (usually master)
-      name -- The name of the author (or committer) of the commit
-      email -- The email of the author (or committer) of the commit"
+      branch    -- The branch name. Default: the repository’s default branch (usually master)
+      author    -- A map containing :name and :email for the author of the commit
+      committer -- A map containing :name and :email for the committer of the commit"
   [user repo path message content sha & [options]]
   (let [body (merge {:message message
                      :content (encode-b64 content)
                      :sha     sha}
                     options)]
     (api-call :put "repos/%s/%s/contents/%s" [user repo path] body)))
+
+(defn delete-contents
+  "Delete a file in a repository
+   path    -- The content path.
+   message -- The commit message.
+   sha     -- The blob SHA of the file being deleted.
+   Options are:
+      branch    -- The branch name. Default: the repository’s default branch (usually master)
+      author    -- A map containing :name and :email for the author of the commit
+      committer -- A map containing :name and :email for the committer of the commit"
+  [user repo path message sha & [options]]
+  (let [body (merge {:message message
+                     :sha     sha}
+                    options)]
+    (api-call :delete "repos/%s/%s/contents/%s" [user repo path] body)))
 
 (defn archive-link
   "Get a URL to download a tarball or zipball archive for a repository.
@@ -551,14 +558,18 @@
 
 (defn releases
   "List releases for a repository."
-  [user repo]
-  (api-call :get "repos/%s/%s/releases" [user repo]))
+  [user repo & [options]]
+  (api-call :get "repos/%s/%s/releases" [user repo] options))
 
 (defn specific-release
   "Gets a specific release."
   [user repo id & [options]]
   (api-call :get "repos/%s/%s/releases/%s" [user repo id] options))
 
+(defn specific-release-by-tag
+  "Gets a specific release by tag."
+  [user repo tag & [options]]
+  (api-call :get "repos/%s/%s/releases/tags/%s" [user repo tag] options))
 
 (defn create-release
   "Creates a release.
