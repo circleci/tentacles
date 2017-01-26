@@ -66,9 +66,10 @@
                metadata (extract-useful-meta headers)]
            (if-not (.contains content-type "raw")
              (let [parsed (parse-json body)]
-               (if (metadata-allowed? parsed)
-                 (with-meta parsed {:links links :api-meta metadata})
-                 parsed))
+               (cond
+                 (nil? parsed) (with-meta '() {:links links :api-meta metadata})
+                 (metadata-allowed? parsed) (with-meta parsed {:links links :api-meta metadata})
+                 :else parsed))
              body))))
 
 (defn update-req
