@@ -44,7 +44,7 @@
   [obj]
   (:api-meta (meta obj)))
 
-(defn meta?
+(defn- metadata-allowed?
   "True if metadata can be added to the object"
   [x]
   (instance? clojure.lang.IObj x))
@@ -66,7 +66,7 @@
                metadata (extract-useful-meta headers)]
            (if-not (.contains content-type "raw")
              (let [parsed (parse-json body)]
-               (if (meta? parsed)
+               (if (metadata-allowed? parsed)
                  (with-meta parsed {:links links :api-meta metadata})
                  parsed))
              body))))
