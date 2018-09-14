@@ -91,7 +91,8 @@
                     {:keys [auth throw-exceptions follow-redirects accept
                             oauth-token etag if-modified-since user-agent
                             otp]
-                     :or {follow-redirects true throw-exceptions false}
+                     :or {follow-redirects (or (:follow-redirects defaults) true)
+                          throw-exceptions (or (:throw-exceptions defaults false))}
                      :as query}]
   (let [req (merge-with merge
                         {:url (format-url end-point positional)
