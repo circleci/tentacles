@@ -5,7 +5,8 @@
             [cemerick.url :as url]))
 
 (def ^:dynamic url "https://api.github.com/")
-(def ^:dynamic defaults {})
+(def ^:dynamic defaults {:follow-redirects true
+                         :throw-exceptions false})
 
 (defn query-map
   "Merge defaults, turn keywords into strings, and replace hyphens with underscores."
@@ -91,8 +92,8 @@
                     {:keys [auth throw-exceptions follow-redirects accept
                             oauth-token etag if-modified-since user-agent
                             otp]
-                     :or {follow-redirects (or (:follow-redirects defaults) true)
-                          throw-exceptions (or (:throw-exceptions defaults false))}
+                     :or {follow-redirects (:follow-redirects defaults)
+                          throw-exceptions (:throw-exceptions defaults)}
                      :as query}]
   (let [req (merge-with merge
                         {:url (format-url end-point positional)
