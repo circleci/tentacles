@@ -87,7 +87,7 @@
   (let [{:keys [auth throw-exceptions follow-redirects accept
                 oauth-token etag if-modified-since user-agent
                 otp conn-timeout socket-timeout conn-request-timeout]
-         :or {follow-redirects true throw-exceptions false }
+         :or {follow-redirects true throw-exceptions false}
          :as query} (merge defaults query)
         req (merge-with merge
                         {:url (format-url end-point positional)
