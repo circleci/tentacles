@@ -114,7 +114,7 @@
                         (when if-modified-since
                           {:headers {"if-Modified-Since" if-modified-since}}))
         raw-query (:raw query)
-        proper-query (query-map (dissoc (merge defaults query) :auth :oauth-token :all-pages :accept :user-agent :otp :throw-exceptions))
+        proper-query (query-map (dissoc (merge defaults query) :auth :oauth-token :all-pages :accept :user-agent :otp :throw-exceptions :follow-redirects))
         req (if (#{:post :put :delete} method)
               (assoc req :body (json/generate-string (or raw-query proper-query)))
               (assoc req :query-params proper-query))]
