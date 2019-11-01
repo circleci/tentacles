@@ -1,0 +1,48 @@
+version: 2.1
+
+workflows:
+  test-and-deploy:
+    jobs:
+      - test:
+          context: org-global
+
+      - deploy:
+          context: org-global
+          requires:
+            - test
+          filters:
+            branches:
+              only:
+                - master
+
+jobs:
+  test:
+    docker:
+      - image: clojure:lein-2.8.1
+
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - v1-jars-{{ checksum "project.clj" }}
+            - v1-jars-
+      - run:
+          name: Run the tests
+          command: lein test2junit
+      - save_cache:
+          key: v1-jars-{{ checksum "project.clj" }}
+          paths:
+            - ~/.m2
+      - store_test_results:
+          path: ./test2junit/xml
+
+  deploy:
+    docker:
+      - image: clojure:lein-2.8.1
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - v1-jars-{{ checksum "project.clj" }}
+            - v1-jars-
+      - run: lein deploy
