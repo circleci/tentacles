@@ -1,7 +1,6 @@
 (ns tentacles.core-test
   (:use clojure.test)
-  (:require [tentacles.core :as core]
-            [clj-http.core :as http]))
+  (:require [tentacles.core :as core]))
 
 (deftest request-contains-user-agent
   (let [request (core/make-request :get "test" nil {:user-agent "Mozilla"})]
